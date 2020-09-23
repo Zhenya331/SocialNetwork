@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SocialNetwork</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        ul#menu li {display: inline;}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <h2>Добро пожаловать, @User.Identity.Name</h2>
+            <font size="5">
+                <ul id="menu">
+                    <li><a asp-action="Profile" asp-controller="Home" asp-route-UserName="@User.Identity.Name">Мой профиль</a> | </li>
+                    <li><a asp-action="Messages" asp-controller="Home">Сообщения</a> | </li>
+                    <li><a asp-action="Friends" asp-controller="Home" asp-route-UserName="@User.Identity.Name">Друзья</a> | </li>
+                    <li><a asp-action="FriendRequests" asp-controller="Home">Заявки в друзья</a> | </li>
+                    <li><a asp-action="FindUsers" asp-controller="Home">Найти пользователя</a> | </li>
+                    <li><a asp-action="Logout" asp-controller="Account">Выйти</a></li>
+                </ul>
+            </font>
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2020 - SocialNetwork
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

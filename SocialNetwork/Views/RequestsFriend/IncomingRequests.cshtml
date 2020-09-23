@@ -1,0 +1,36 @@
+﻿@model IEnumerable<User>
+@{
+    ViewData["Title"] = "IncomingRequests";
+}
+
+<h4>Мои возможные друзья</h4>
+
+<body>
+    <font size="5">
+        <ul id="menu">
+            <li><a asp-action="IncomingRequests" asp-controller="RequestsFriend">Входящие</a> |</li>
+            <li><a asp-action="OutgoingRequests" asp-controller="RequestsFriend">Исходящие</a></li>
+        </ul>
+    </font>
+
+    <h4>Входящие заявки в друзья</h4>
+
+    @if (Model.Count() > 0)
+    {
+        @foreach (var user in Model)
+        {
+            <p></p>
+            <form method="post" action="">
+                <input type="hidden" name="PotentialFriendName" value="@user.UserName" />
+                <a asp-action="Profile" asp-controller="Home" asp-route-UserName="@user.UserName">@user.UserName</a>
+                <input type="submit" formaction="AcceptRequestFriend" value="Принять" />
+                <input type="submit" formaction="RejectRequestFriend" value="Отклонить" />
+            </form>
+        }
+    }
+    else
+    {
+        <h5>Список пуст</h5>
+    }
+</body>
+

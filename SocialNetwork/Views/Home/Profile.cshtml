@@ -1,0 +1,14 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<h4>Профиль пользователя @Model.UserName</h4>
+<body>
+    <ul style="list-style-type:disc;">
+        <li>id: @Model.Id</li>
+        <li><a asp-action="Friends" asp-controller="Home" asp-route-UserName="@Model.UserName">Друзья</a></li>
+        <li>Дата регистрации: @Model.DateRegistration.ToString("MM/dd/yyyy")</li>
+    </ul>
+</body>
+

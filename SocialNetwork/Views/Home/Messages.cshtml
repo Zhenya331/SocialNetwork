@@ -1,0 +1,25 @@
+﻿@model IEnumerable<User>
+@{
+    ViewData["Title"] = "Сообщения";
+}
+
+<h4>Мои сообщения</h4>
+
+<body>
+    @if (Model.Count() > 0)
+    {
+        @foreach (var user in Model)
+        {
+            <p></p>
+            <form method="post" asp-action="Chat" asp-controller="Dialog">
+                <input type="hidden" name="FriendName" value="@user.UserName" />
+                <a asp-action="Profile" asp-controller="Home" asp-route-UserName="@user.UserName">@user.UserName</a>
+                <button type="submit">Диалог</button>
+            </form>
+        }
+    }
+    else
+    {
+        <h5>Список пуст</h5>
+    }
+</body>

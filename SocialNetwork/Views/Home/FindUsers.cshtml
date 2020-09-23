@@ -1,0 +1,35 @@
+﻿@model IEnumerable<FindUserModel>
+@{
+    ViewData["Title"] = "Найти пользователей";
+}
+
+<body>
+    <form autocomplete="off" method="post">
+        <input type="text" name="Search" />
+        <input type="submit" value="Искать" />
+    </form>
+    <p></p>
+
+    @if (Model != null)
+    {
+        if (Model.Count() > 0)
+        {
+            foreach (var user in Model)
+            {
+                <form method="post" asp-action="SendRequestFriend" asp-controller="RequestsFriend">
+                    <input type="hidden" name="RequestFriendName" value="@user.user.UserName" />
+                    <a asp-action="Profile" asp-controller="Home" asp-route-UserName="@user.user.UserName">@user.user.UserName</a>	
+                    @if ((user.IsMyFriend == false) && (User.Identity.Name != user.user.UserName))
+                    {
+                        <button type="submit">Добавить в друзья</button>
+                    }
+                </form>
+                <p></p>
+            }
+        }
+        else
+        {
+            <h4>Ничего не найдено</h4>
+        }
+    }
+</body>

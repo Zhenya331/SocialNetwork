@@ -1,0 +1,29 @@
+﻿@model FriendsListModel
+@{
+    ViewData["Title"] = "Друзья";
+}
+
+<h4>Друзья пользователя @Model.user.UserName</h4>
+
+<body>
+    @if (Model.friends.Count() > 0)
+    {
+        @foreach (var user in Model.friends)
+        {
+            <p></p>
+            <form method="post" asp-action="DeleteFriend" asp-controller="RequestsFriend">
+                <input type="hidden" name="FriendName" value="@user.UserName" />
+                <a asp-action="Profile" asp-controller="Home" asp-route-UserName="@user.UserName">@user.UserName</a>
+                @if (User.Identity.Name == Model.user.UserName)
+                {
+                    <button type="submit">Удалить</button>
+                }
+            </form>
+        }
+    }
+    else
+    {
+        <h5>Список пуст</h5>
+    }
+</body>
+

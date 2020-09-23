@@ -1,0 +1,81 @@
+﻿@model ChatModel
+@{
+    ViewData["Title"] = "Chat";
+}
+
+<body>
+    <div align="center">
+        <h3>Диалог с <a asp-action="Profile" asp-controller="Home" asp-route-UserName="@Model.friend.UserName">@Model.friend.UserName</a></h3>
+    </div>
+
+    <ul class="chat-box chatContainerScroll" id="messagesList">
+        @foreach (var message in Model.messages)
+        {
+            @if (message.SendId == Model.user.Id)
+            {
+                <li>
+                    <p>@Model.user.UserName : @message.SendDate.ToString("D")</p> 
+                    <p>@message.MessageText</p>
+                    <p></p>
+                </li>
+            }
+            @if (message.SendId == Model.friend.Id)
+            {
+                <li>
+                    <p>@Model.friend.UserName : @message.SendDate.ToString("D")</p>
+                    <p>@message.MessageText</p>
+                    <p></p>
+                </li>
+            }
+        }
+    </ul>
+
+    <form autocomplete="off">
+        <input type="hidden" name="UserName" id="UserName" value="@User.Identity.Name" />
+        <input type="hidden" name="FriendName" id="FriendName" value="@Model.friend.UserName" />
+        <input type="text" name="message" id="message" />
+        <input type="button" id="SendMsg" value="Отправить" />
+    </form>
+
+    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script>
+        const hubConnection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
+
+        hubConnection.on("ReceiveMessage", function (user, message) {
+            // Раскодировка сообщения.
+            var EncodeUser, EncodeFriend, border, counter = 1;
+            for (var i = 0; i < message.length; i++) {
+                if ((message[i] === "_") && (counter === 1)) {
+                    border = i;
+                    EncodeUser = message.slice(0, border);
+                    counter++;
+                    continue;
+                }
+                if ((message[i] === "_") && (counter === 2)) {
+                    EncodeFriend = message.slice(border + 1, i);
+                    message = message.slice(i + 1);
+                    break;
+                }
+            }
+            if (((document.getElementById("UserName").value === EncodeUser) && (document.getElementById("FriendName").value === EncodeFriend)) ||
+                (document.getElementById("UserName").value === EncodeFriend) && (document.getElementById("FriendName").value === EncodeUser)) {
+                var MessageElem ="[NewMessage]: " + user + ": " + message;
+                var li = document.createElement("li");
+                li.textContent = MessageElem;
+                document.getElementById("messagesList").appendChild(li);
+                document.getElementById("message").value = null;
+            }
+        });
+
+        hubConnection.start();
+
+        document.getElementById("SendMsg").addEventListener("click", function (e) {
+            // Чтобы сообщение пришло только отправителю и получателю,
+            // нужно его закодировать.
+            var code = document.getElementById("UserName").value + "_" + document.getElementById("FriendName").value + "_";
+            var message = code + document.getElementById("message").value;
+            var user = document.getElementById("UserName").value;
+            hubConnection.invoke("Send", user, message);
+        });
+    </script>
+</body>
